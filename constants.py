@@ -1,8 +1,22 @@
 
-MAX_CHARS_PER_VOLUME = 65000
+MAX_CHARS_PER_VOLUME = 70000
+MIN_CHARS_PER_VOLUME = 60000
 
 # resource file containing default settings for output documents (Ariel font, size 14, Right-To-Left)
 TEMPLATE = 'template.docx'
+
+# this magic string should be added before each new chapter by the person editing the doc prior to it being
+# submitted to this program. this will allow us to distinguish between chapters, since normally there is no
+# consistency between different books.
+MAGIC_STRING = 'תחילת פרק חדש - קודה'
+
+GATE_END_INDICATOR = "העתקה או העברה של העותק"
+CHAPTER_INDICATOR = "תחילת פרק חדש"
+
+SPLIT_CHAPTER_END = "המשך הפרק בכרך הבא"
+SPLIT_CHAPTER_START = "המשך פרק {}"
+
+FIRST_PAGE_VOLUMES_PARAGRAPH = "כרך ראשון"
 
 DOCX = 'docx'
 BOOK_SUFFIX = 'סוף הספר'

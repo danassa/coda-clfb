@@ -3,7 +3,7 @@ import threading
 import PySimpleGUI as sg
 from constants import *
 from split import generate_outputs
-from helpers import get_now
+from book import get_now, get_elapsed_time_str
 from sticker import create_stickers
 # todo logs!
 
@@ -20,7 +20,7 @@ def the_gui():
                       [sg.Text('')],
                       [sg.Input(key=G_PATH, enable_events=True, justification='r', size=(80, 1)),
                        sg.FileBrowse(button_text="בחר ספר", size=(11, 1))],
-                      [sg.Text('', auto_size_text=False, key=G_TIMER, visible=False),
+                      [sg.Text('00:00', key=G_TIMER),
                        sg.Button(G_SPLIT), sg.Text('', size=(20, 1))],
                       [sg.Text('')]
                   ]
@@ -51,13 +51,13 @@ def the_gui():
         [sg.Text('')]
     ]
 
-    window = sg.Window(G_WINDOW_TITLE).Layout(layout)
+    window = sg.Window(G_WINDOW_TITLE, layout, finalize=True)
     gui_queue = queue.Queue()
 
     start_time = 0
 
     while True:
-        event, values = window.Read(timeout=1000)
+        event, values = window.Read(timeout=100)
 
         if event is None or event == G_EXIT:
             break
@@ -67,7 +67,6 @@ def the_gui():
                 sg.popup("You MUST pick a file!", title='')
             else:
                 start_time = get_now()
-                window[G_TIMER].Update(visible=True)
                 window[G_SPLIT].Update(disabled=True)
                 window[G_STICKER].Update(disabled=True)
                 thread_id = threading.Thread(target=start_split, args=(values[G_PATH], gui_queue), daemon=True)
@@ -86,15 +85,14 @@ def the_gui():
         try:
             gui_queue.get_nowait()
             sg.popup("Done!")
-            window[G_TIMER].Update(visible=False)
+            start_time = 0
             window[G_SPLIT].Update(disabled=False)
             window[G_STICKER].Update(disabled=False)
         except queue.Empty:
             pass
 
-        elapsed_time = get_now() - start_time
-        display_time = '{:02d}:{:02d}'.format((elapsed_time // 100) // 60, (elapsed_time // 100) % 60)
-        window[G_TIMER].Update(value=display_time)
+        if start_time != 0:
+            window[G_TIMER].Update(value=get_elapsed_time_str(start_time))
 
     window.Close()
 
