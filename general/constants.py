@@ -1,6 +1,9 @@
+import time
 
-MAX_CHARS_PER_VOLUME = 70000
-MIN_CHARS_PER_VOLUME = 60000
+LOG_FILE = "coda.log"
+
+MAX_CHARS_PER_VOLUME = 5000
+MIN_CHARS_PER_VOLUME = 2000
 
 # resource file containing default settings for output documents (Ariel font, size 14, Right-To-Left)
 TEMPLATE = 'template.docx'
@@ -27,6 +30,7 @@ G_PATH = 'Path'
 G_SPLIT = 'חלק לכרכים!'
 G_STICKER = 'צור מדבקות!'
 G_EXIT = 'סגור'
+G_HELP = 'תמיכה'
 
 G_TITLE = 'Title'
 G_AUTHOR = 'Author'
@@ -122,3 +126,13 @@ VOLUMES_NAMES_2 = [
     'בעשרים ותשעה כרכים',
     'בשלושים כרכים'
 ]
+
+
+def get_now():
+    return int(round(time.time() * 100))
+
+
+def get_elapsed_time_str(start_time):
+    elapsed_time = get_now() - start_time
+    display_time = '{:02d}:{:02d}'.format((elapsed_time // 100) // 60, (elapsed_time // 100) % 60)
+    return display_time

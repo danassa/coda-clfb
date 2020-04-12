@@ -1,6 +1,6 @@
-from book import Book, Chapter
+from general.book import Book
 from unittest import mock
-from constants import GATE_END_INDICATOR, CHAPTER_INDICATOR
+from general.constants import GATE_END_INDICATOR, CHAPTER_INDICATOR
 
 
 def test_split_volumes():
