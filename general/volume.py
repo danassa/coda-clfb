@@ -4,21 +4,37 @@ from general.constants import *
 
 
 class Volume:
-    def __init__(self, start, end, first_paragraph=None, last_paragraph=None):
+    def __init__(self, chars, start, end, fst_c_index_in_v, lst_c_index_in_v, first_paragraph=None, last_paragraph=None):
         """
+        :param chars: total count of characters in all this volume's paragraphs
         :param start: index of the book's paragraphs which will be the FIRST in this volume
         :param end: index of the book's paragraphs which will be the LAST in this volume
+        :param fst_c_index_in_v: the index of the FIRST chapter in this volume, in the book's Chapters field
+        :param lst_c_index_in_v: the index of the LAST chapter in this volume, according to the book's Chapters field
         :param first_paragraph: indicate if this volume STARTS in the middle of a chapter. None or a string.
         :param last_paragraph: indicate if this volume ENDS in the middle of a chapter. None or a string.
         """
         self.start_paragraph_index = start
         self.end_paragraph_index = end
+        self.chars = chars
         self.first_paragraph = first_paragraph
         self.last_paragraph = last_paragraph
+        self.first_chapter = fst_c_index_in_v
+        self.last_chapter = lst_c_index_in_v
         self.doc = None
         self.volume_num = None
-        logging.debug("Volume initialized with paragraphs: {} to {}, with first paragraph: '{}' and last: '{}'"
-                      .format(self.start_paragraph_index, self.end_paragraph_index, self.first_paragraph, self.last_paragraph))
+        logging.debug("Volume initialized with paragraphs: {} to {}, chapters {} to {}, with first paragraph: '{}' and last: '{}'"
+                      .format(self.start_paragraph_index, self.end_paragraph_index, self.first_chapter, self.last_chapter, self.first_paragraph, self.last_paragraph))
+
+    def update_first_chapter(self, chars_added, new_first_paragraph):
+        self.start_paragraph_index = new_first_paragraph
+        self.chars = self.chars + chars_added
+        self.first_paragraph = None
+
+    def update_last_chapter(self, chars_removed, new_last_paragraph):
+        self.end_paragraph_index = new_last_paragraph
+        self.chars = self.chars - chars_removed
+        self.last_paragraph = None
 
     def create_doc(self, path, gate_index, volume_num, last_volume_num):
         self.doc = Document(path)
@@ -34,10 +50,10 @@ class Volume:
         self.update_first_page(last_volume_num)
 
     def remove_redundant_paragraph(self, gate_index):
-        last_paragraph_in_book_index = len(self.doc.paragraphs ) -1
+        last_paragraph_in_book_index = len(self.doc.paragraphs) - 1
         for p in range(last_paragraph_in_book_index, self.end_paragraph_index, -1):
             self.delete_paragraph(self.doc.paragraphs[p])
-        for p in range(self.start_paragraph_index, gate_index, -1):
+        for p in range(self.start_paragraph_index - 1, gate_index, -1):
             self.delete_paragraph(self.doc.paragraphs[p])
         logging.debug("deleting paragraphs {}-{} and {}-{} in volume {}"
                       .format(self.end_paragraph_index, last_paragraph_in_book_index, gate_index, self.start_paragraph_index, self.volume_num))

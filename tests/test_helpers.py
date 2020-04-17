@@ -2,6 +2,10 @@ from general.book import Book
 from unittest import mock
 from general.constants import GATE_END_INDICATOR, CHAPTER_INDICATOR
 
+def test_calc_min_chars_per_last_volume():
+    book = Book([p(GATE_END_INDICATOR), p('1'), p('2')], 3000, 5000)
+    min_per_last = book.calc_min_chars_per_last_volume()
+    assert min_per_last == 2000
 
 def test_split_volumes():
     book = Book([

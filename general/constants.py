@@ -2,8 +2,8 @@ import time
 
 LOG_FILE = "coda.log"
 
-MAX_CHARS_PER_VOLUME = 5000
-MIN_CHARS_PER_VOLUME = 2000
+MAX_CHARS_PER_VOLUME = 65000
+MIN_CHARS_PER_VOLUME = 55000
 
 # resource file containing default settings for output documents (Ariel font, size 14, Right-To-Left)
 TEMPLATE = 'template.docx'

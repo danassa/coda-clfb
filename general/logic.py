@@ -17,7 +17,9 @@ def start_stickers(directory, title, author, volumes, pages, gui_queue):
     gui_queue.put("stickers")
     return
 
-
+# todo
+#  handle exception gracefully!!!!
+# check if we really need \כויות יוצרים בכל כרך?
 def create_split(path):
     logging.debug("start split {} to volumes")
 
