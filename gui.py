@@ -12,7 +12,7 @@ fileHandler.setFormatter(logFormatter)
 streamHandler = logging.StreamHandler()
 
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 logger.addHandler(fileHandler)
 logger.addHandler(streamHandler)
 
