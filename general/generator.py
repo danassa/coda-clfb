@@ -1,19 +1,13 @@
 import logging
 from general.constants import *
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
-from copy import deepcopy
-from docx.document import Document as _Document
-from docx.oxml.text.paragraph import CT_P
-from docx.oxml.table import CT_Tbl
-from docx.table import _Cell, Table
-from docx.text.paragraph import Paragraph
-from general.element import Element
 
 
 class DocxGenerator:
 
-    def __init__(self, origin, gate_index, volume, volume_index, volumes_count, default_font):
-        self.doc = deepcopy(origin)
+    def __init__(self, doc, elements, gate_index, volume, volume_index, volumes_count, default_font):
+        self.doc = doc
+        self.elements = elements
         self.gate_index = gate_index
         self.volume = volume
         self.volume_index = volume_index
@@ -21,9 +15,8 @@ class DocxGenerator:
         self.default_font = default_font
 
     def format_volume(self):
-        elements = build_elements_list(self.doc)
-        self.remove_redundant_paragraphs(elements)
-        self.delete_chapter_beginning_markers(elements)
+        self.remove_redundant_paragraphs(self.elements)
+        self.delete_chapter_beginning_markers(self.elements)
         self.add_split_chapter_notes()
         if self.volume_index == self.volumes_count:
             self.add_book_suffix()
@@ -39,7 +32,6 @@ class DocxGenerator:
             elements[p].delete()
         logging.debug("deleting paragraphs {}-{} and {}-{}"
                       .format(self.volume.end_index, last_index_in_book, self.gate_index, self.volume.start_index))
-
 
     def add_split_chapter_notes(self):
         if self.volume.first_paragraph is not None:
@@ -106,21 +98,4 @@ class DocxGenerator:
     def save(self, directory):
         volume_path = "{dir}/{vol}.{docx}".format(dir=directory, vol=str(self.volume_index), docx=DOCX)
         self.doc.save(volume_path)
-
-
-def build_elements_list(parent):
-    if isinstance(parent, _Document):
-        parent_elm = parent.element.body
-    elif isinstance(parent, _Cell):
-        parent_elm = parent._tc
-    else:
-        raise ValueError("something's not right")
-
-    elements = []
-    for index, child in enumerate(parent_elm.iterchildren()):
-        if isinstance(child, CT_P):
-            elements.append(Element(True, Paragraph(child, parent)))
-        elif isinstance(child, CT_Tbl):
-            elements.append(Element(False, Table(child, parent)))
-    return elements
 
