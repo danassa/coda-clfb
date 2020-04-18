@@ -41,7 +41,7 @@ class Book:
 
         for index, paragraph in enumerate(self.paragraphs):
             if paragraph.text == CHAPTER_INDICATOR:
-                if current_chapter_start_index == self.last_gate_paragraph + 1:  # first chapter!
+                if current_chapter_start_index == self.last_gate_paragraph:  # first chapter!
                     current_chapter_start_index = index + 1
                 else:
                     new_chapter = Chapter(chapter_chars, current_chapter_start_index, index - 1)
