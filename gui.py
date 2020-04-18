@@ -104,8 +104,8 @@ def the_gui():
 
         try:
             message = gui_queue.get_nowait()
-            logging.info("done with task {}, time elapsed: {}".format(message, get_elapsed_time_str(start_time)))
-            sg.popup("Done!")
+            logging.info("done with task - {}, time elapsed: {}".format(message, get_elapsed_time_str(start_time)))
+            sg.popup(message)
             start_time = 0
             window[G_SPLIT].Update(disabled=False)
             window[G_STICKER].Update(disabled=False)

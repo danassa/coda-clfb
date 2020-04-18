@@ -15,18 +15,23 @@ from general.generator import DocxGenerator
 
 
 def start_split(input_path, gui_queue):
-    create_split(input_path)
-    gui_queue.put("split")
+    try:
+        create_split(input_path)
+        gui_queue.put("Done Split to Volumes")
+    except Exception as error:
+        error_type = type(error)
+        logging.error(error_type)
+        logging.exception(error)
+        gui_queue.put("Failed Split. {} error occurred - {}. Check the logs!".format(error_type, error))
     return
 
 
 def start_stickers(directory, title, author, volumes, pages, gui_queue):
     create_stickers(directory, title, author, volumes, pages)
-    gui_queue.put("stickers")
+    gui_queue.put("Done Creating Stickers")
     return
 
-# todo
-#  handle exception gracefully!!!!
+
 def create_split(path):
     logging.info("start split {} to volumes")
 
