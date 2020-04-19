@@ -20,7 +20,6 @@ class DocxGenerator:
         self.volumes_count = volumes_count
         self.default_font = self.doc.paragraphs[self.gate_index - 1].runs[-1].font
 
-
     def format_volume(self):
         self.remove_redundant_paragraphs(self.elements)
         self.delete_chapter_beginning_markers(self.elements)
@@ -39,7 +38,6 @@ class DocxGenerator:
             elements[p].delete()
         logging.debug("deleting paragraphs {}-{} and {}-{}"
                       .format(self.volume.end_index, last_index_in_book, self.gate_index, self.volume.start_index))
-
 
     def add_split_chapter_notes(self):
         if self.volume.first_paragraph is not None:
@@ -92,6 +90,7 @@ class DocxGenerator:
         else:
             logging.error("couldn't locate the phrase {} in the first 30 paragraphs. "
                           "cannot update the first page with number of volumes".format(FIRST_PAGE_VOLUMES_PARAGRAPH))
+            #todo add warning??
 
     def update_text(self, index, new_text):
         runs = self.doc.paragraphs[index].runs

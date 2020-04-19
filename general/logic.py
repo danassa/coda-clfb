@@ -52,14 +52,9 @@ def create_split(path):
     for index, vol in enumerate(volumes, 1):
         new_doc = deepcopy(origin)
         elements = build_elements_list(new_doc)
-        volume_path = "{dir}/{vol}.{docx}".format(dir=directory, vol=str(index), docx=DOCX)
-
-        # vol.create_doc(new_doc, elements, book.last_gate_paragraph, index, volumes_count)
-        # new_doc.save(volume_path)
-
-        g = DocxGenerator(new_doc, elements, book.last_gate_paragraph, vol, index, volumes_count)
-        g.format_volume()
-        g.save(directory)
+        formatted = DocxGenerator(new_doc, elements, book.last_gate_paragraph, vol, index, volumes_count)
+        formatted.format_volume()
+        formatted.save(directory)
 
     logging.debug("done split to volume, all saved in the file system")
 

@@ -57,9 +57,8 @@ class Book:
         logging.info("Found {} actual chapters in the book, with a total of {} characters"
                      .format(len(self.chapters), self.chars))
 
-        # for i, c in enumerate(self.chapters):
-        #     logging.debug("\nchapter " + str(i) + ": " + str(c.start_index) + " - " + str(c.end_index) + ": '" +
-        #                  self.paragraphs[c.start_index].text + "' - '" + self.paragraphs[c.end_index].text)
+        for i, c in enumerate(self.chapters):
+            logging.debug("\nchapter " + str(i) + ": " + str(c.start_index) + " - " + str(c.end_index))
 
     def split_volumes(self):
         c_index = 0
@@ -112,7 +111,7 @@ class Book:
                     self.chapters[c_index].end_index = middle_index
                     self.chapters[c_index].chars = chapter.chars - chars_left_in_chapter
                     v_index = middle_index + 1
-                    v_paragraph = SPLIT_CHAPTER_START.format(c_index)
+                    v_paragraph = SPLIT_CHAPTER_START.format(c_index + 1)
                 else:
                     self.volumes.append(Volume(chars=v_chars,
                                                start=v_index,
@@ -129,7 +128,7 @@ class Book:
                                            end=chapter.end_index,
                                            fst_c_index_in_v=fst_c_index_in_v,
                                            lst_c_index_in_v=c_index,
-                                           last_paragraph=v_paragraph))
+                                           first_paragraph=v_paragraph))
                 fst_c_index_in_v = lst_c_index_in_v = c_index + 1
                 v_chars = 0
                 v_index = chapter.end_index + 1
@@ -144,10 +143,9 @@ class Book:
 
         logging.info("book will be split into {} volumes".format(len(self.volumes)))
 
-        # for i, v in enumerate(self.volumes):
-        #     logging.debug("volume " + str(i) + "- chapters: " + str(v.first_chapter_index)+ " - " + str(v.last_chapter_index)
-        #                  + ", paragraphs: " + str(v.start_index) + " - " + str(v.end_index) + ": '" +
-        #                  self.paragraphs[v.start_index].text + "' - '" + self.paragraphs[v.end_index].text)
+        for i, v in enumerate(self.volumes):
+            logging.debug("volume " + str(i) + "- chapters: " + str(v.first_chapter_index)+ " - " + str(v.last_chapter_index)
+                         + ", paragraphs: " + str(v.start_index) + " - " + str(v.end_index))
 
     def split_chapter(self, first_index, last_index, chars, max_chars):
         current_chars_count = chars
