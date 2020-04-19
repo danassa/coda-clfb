@@ -88,9 +88,9 @@ class DocxGenerator:
             self.update_text(index, VOLUMES_NAMES_1[self.volume_index - 1])
             self.update_text(index - 1, VOLUMES_NAMES_2[self.volumes_count - 1])
         else:
-            logging.error("couldn't locate the phrase {} in the first 30 paragraphs. "
-                          "cannot update the first page with number of volumes".format(FIRST_PAGE_VOLUMES_PARAGRAPH))
-            #todo add warning??
+            exception_message = "couldn't locate the phrase '{}' in the first 30 paragraphs.".format(FIRST_PAGE_VOLUMES_PARAGRAPH)
+            logging.error(exception_message + "cannot update the first page with number of volumes")
+            raise ValueError(exception_message)
 
     def update_text(self, index, new_text):
         runs = self.doc.paragraphs[index].runs

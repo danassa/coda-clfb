@@ -1,3 +1,4 @@
+from docx.opc.exceptions import PackageNotFoundError
 from general.book import *
 import os
 from docx import Document
@@ -18,11 +19,13 @@ def start_split(input_path, gui_queue):
     try:
         create_split(input_path)
         gui_queue.put("Done Split to Volumes")
+    except PackageNotFoundError:
+        gui_queue.put("Failed Split. Input File Must be in .docx Format")
     except Exception as error:
         error_type = type(error)
         logging.error(error_type)
         logging.exception(error)
-        gui_queue.put("Failed Split. {} error occurred - {}. Check the logs!".format(error_type, error))
+        gui_queue.put("Failed Split. Error Occurred - {}. \nCheck the logs for {}!".format(error, error_type))
     return
 
 
