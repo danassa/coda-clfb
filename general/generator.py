@@ -1,7 +1,6 @@
 import logging
 from general.constants import *
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
-from copy import deepcopy
 from docx.document import Document as _Document
 from docx.oxml.text.paragraph import CT_P
 from docx.oxml.table import CT_Tbl
@@ -12,18 +11,19 @@ from general.element import Element
 
 class DocxGenerator:
 
-    def __init__(self, origin, gate_index, volume, volume_index, volumes_count, default_font):
-        self.doc = deepcopy(origin)
+    def __init__(self, doc, elements, gate_index, volume, volume_index, volumes_count):
+        self.doc = doc
+        self.elements = elements
         self.gate_index = gate_index
         self.volume = volume
         self.volume_index = volume_index
         self.volumes_count = volumes_count
-        self.default_font = default_font
+        self.default_font = self.doc.paragraphs[self.gate_index - 1].runs[-1].font
+
 
     def format_volume(self):
-        elements = build_elements_list(self.doc)
-        self.remove_redundant_paragraphs(elements)
-        self.delete_chapter_beginning_markers(elements)
+        self.remove_redundant_paragraphs(self.elements)
+        self.delete_chapter_beginning_markers(self.elements)
         self.add_split_chapter_notes()
         if self.volume_index == self.volumes_count:
             self.add_book_suffix()
@@ -69,6 +69,7 @@ class DocxGenerator:
     def add_ending(self, text):
         p = self.doc.add_paragraph(text)
         self.set_style(p)
+        logging.debug("added ending {}".format(text))
 
     def set_style(self, paragraph):
         paragraph.runs[0].font.size = self.default_font.size
@@ -97,6 +98,7 @@ class DocxGenerator:
         for r in runs:
             r.clear()
         runs[0].text = new_text
+        logging.debug("update paragraph in index {} to {}".format(index, new_text))
 
     def delete_chapter_beginning_markers(self, elements):
         for p in elements:

@@ -98,7 +98,7 @@ class Volume:
     def add_ending(self, text):
         p = self.doc.add_paragraph(text, self.style)
         self.set_style(p)
-        # todo rtl
+        logging.debug("added ending {}".format(text))
 
     def set_style(self, paragraph):
         paragraph.runs[0].font.size = self.font.size
@@ -127,6 +127,7 @@ class Volume:
         for r in runs:
             r.clear()
         runs[0].text = new_text
+        logging.debug("update paragraph in index {} to {}".format(index, new_text))
 
     def find_last_non_empty_paragraph_index(self):
         paragraph = None

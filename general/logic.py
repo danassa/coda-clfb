@@ -11,22 +11,27 @@ from docx.oxml.table import CT_Tbl
 from docx.table import _Cell, Table
 from docx.text.paragraph import Paragraph
 from general.element import Element
+from general.generator import DocxGenerator
 
 
 def start_split(input_path, gui_queue):
-    create_split(input_path)
-    gui_queue.put("split")
+    try:
+        create_split(input_path)
+        gui_queue.put("Done Split to Volumes")
+    except Exception as error:
+        error_type = type(error)
+        logging.error(error_type)
+        logging.exception(error)
+        gui_queue.put("Failed Split. {} error occurred - {}. Check the logs!".format(error_type, error))
     return
 
 
 def start_stickers(directory, title, author, volumes, pages, gui_queue):
     create_stickers(directory, title, author, volumes, pages)
-    gui_queue.put("stickers")
+    gui_queue.put("Done Creating Stickers")
     return
 
-# todo
-#  handle exception gracefully!!!!
-# check if we really need \כויות יוצרים בכל כרך?
+
 def create_split(path):
     logging.info("start split {} to volumes")
 
@@ -42,15 +47,19 @@ def create_split(path):
 
     book = Book(build_elements_list(origin))
     volumes = book.volumes
-
     volumes_count = len(volumes)
 
     for index, vol in enumerate(volumes, 1):
         new_doc = deepcopy(origin)
         elements = build_elements_list(new_doc)
-        vol.create_doc(new_doc, elements, book.last_gate_paragraph, index, volumes_count)
         volume_path = "{dir}/{vol}.{docx}".format(dir=directory, vol=str(index), docx=DOCX)
-        new_doc.save(volume_path)
+
+        # vol.create_doc(new_doc, elements, book.last_gate_paragraph, index, volumes_count)
+        # new_doc.save(volume_path)
+
+        g = DocxGenerator(new_doc, elements, book.last_gate_paragraph, vol, index, volumes_count)
+        g.format_volume()
+        g.save(directory)
 
     logging.debug("done split to volume, all saved in the file system")
 
