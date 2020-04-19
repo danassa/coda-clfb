@@ -11,7 +11,7 @@ class Chapter:
         assert end >= start
         assert chars > 0
         self.chars = chars
-        self.start_index = start
-        self.end_index = end
-        logging.debug("Chapter created with {} chars, paragraphs: {} to {}"
-                      .format(self.chars, self.start_index, self.end_index))
+        self.start_paragraph_index = start
+        self.end_paragraph_index = end
+        logging.debug("Chapter created with {}, paragraphs: {} to {}"
+                      .format(self.chars, self.start_paragraph_index, self.end_paragraph_index))
