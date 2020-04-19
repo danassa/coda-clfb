@@ -144,7 +144,7 @@ class Book:
         logging.info("book will be split into {} volumes".format(len(self.volumes)))
 
         for i, v in enumerate(self.volumes):
-            logging.debug("volume " + str(i) + "- chapters: " + str(v.first_chapter) + " - " + str(v.last_chapter)
+            logging.debug("volume " + str(i) + "- chapters: " + str(v.first_chapter_index) + " - " + str(v.last_chapter_index)
                           + ", paragraphs: " + str(v.start_index) + " - " + str(v.end_index))
 
     def split_chapter(self, first_index, last_index, chars, max_chars):
