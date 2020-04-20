@@ -21,13 +21,15 @@ try:
     max_chars = config['default'].getint('max_chars', fallback=MAX_CHARS_PER_VOLUME)
     min_chars = config['default'].getint('min_chars', fallback=MIN_CHARS_PER_VOLUME)
     log_level = config['default'].get('log_level', fallback="INFO")
+    logger.setLevel(log_level)
 except Exception as e:
     logging.exception(e)
     logging.info('falling to default configuration')
     max_chars = MAX_CHARS_PER_VOLUME
     min_chars = MIN_CHARS_PER_VOLUME
-    log_level = "INFO"
 
-logger.setLevel(log_level)
-
-create_gui(max_chars, min_chars)
+try:
+    create_gui(max_chars, min_chars)
+except Exception as e:
+    logging.exception(e)
+    logging.error("Unexpected error occurred. Bye Bye")

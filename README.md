@@ -1,32 +1,27 @@
 # coda-clfb
-Automatization tool for the central library for the blind, IL
+Automatization tool for the Central Library For the Blind, IL
 
-Libraries to pip install:
+### How to create an app for Windows end user
 
-- python-docx	0.8.10
-- PySimpleGUI	4.18.0
-- pyinstaller
-- pywin32
+1. Copy this project to a Windows OS
 
-Create app for Windows end user:
+2. Install Python3 (if missing) and pip install the libraries:
+    - python-docx	0.8.10
+    - PySimpleGUI	4.18.0
+    - pyinstaller
+    - pywin32
+    
+3. Open terminal and cd into /coda-clfb directory
 
-- Copy this project to a Windows OS
-- Install Python3 (if missing) and the libraries mentioned above
-- run the below command from within the /coda directory
-pyinstaller --onefile -wF --add-data 'template.docx;.' gui.py
+4. Run:
+pyi-makespec --onefile  -wF --add-data "template.docx;." --name bookPrepare main.py
 
-
-
-
-This will create a 'dist' folder containing an .exe file you can distribute to the end-user.
-
-NOTE : vs ;
-1. run:
-pyi-makespec --onefile  -wF --add-data 'template.docx:.' --name bookPrepare main.py
-
-2. edit the file created (bookPrepare.spec) - add at the end:
+5. Edit the file created (bookPrepare.spec) - add at the end:
 import shutil
 shutil.copyfile('config.ini', '{0}/config.ini'.format(DISTPATH))
 
-3. run:
+6. Run:
 pyinstaller --clean bookPrepare.spec
+
+
+This will create a 'dist' folder containing an EXE file with a config file you can distribute to the end user.

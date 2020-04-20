@@ -66,7 +66,7 @@ def create_gui(max_chars, min_chars):
 
         if event == G_SPLIT:
             if values[G_PATH] == '':
-                sg.popup("You MUST pick a file!", title='')
+                sg.popup("You MUST pick a file!", title=ERROR_TITLE)
             else:
                 start_time = get_now()
                 toggle_buttons(window, True)
@@ -89,7 +89,7 @@ def create_gui(max_chars, min_chars):
             response = gui_queue.get_nowait()
             logging.info("done with status {} - {}, time elapsed: {}".format(response[0], response[1], get_elapsed_time_str(start_time)))
             if response[0] == SUCCESS:
-                sg.popup("הפעולה הושלמה בהצלחה. מיקום המסמכים:\n\n" + response[1])
+                sg.popup("הפעולה הושלמה בהצלחה. מיקום המסמכים\n\n" + response[1], title='')
             else:
                 sg.popup(response[1], title=ERROR_TITLE)
             start_time = 0
