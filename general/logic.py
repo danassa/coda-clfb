@@ -13,6 +13,7 @@ from docx.table import _Cell, Table
 from docx.text.paragraph import Paragraph
 from general.element import Element
 from general.generator import DocxGenerator
+from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 
 
 def start_split(input_path, gui_queue, max_chars, min_chars):
@@ -88,7 +89,8 @@ def create_stickers(directory, book_title, book_author, num_volumes, num_pages):
                                           total=VOLUMES_NAMES_2[int(num_volumes)-1],
                                           current=VOLUMES_NAMES_1[i],
                                           pages=num_pages)
-        doc.add_paragraph(text=sticker, style=style)
+        p = doc.add_paragraph(text=sticker, style=style)
+        p.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
     path = "{dir}/{sticker} - {book}.{docx}".format(dir=directory, sticker=STICKER, book=book_title, docx=DOCX)
 
     doc.save(path)
