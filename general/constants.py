@@ -6,8 +6,6 @@ CONF_FILE = "config.ini"
 MAX_CHARS_PER_VOLUME = 65000
 MIN_CHARS_PER_VOLUME = 55000
 
-# resource file containing default settings for output documents (Ariel font, size 14, Right-To-Left)
-TEMPLATE = 'template.docx'
 
 # this magic string should be added before each new chapter by the person editing the doc prior to it being
 # submitted to this program. this will allow us to distinguish between chapters, since normally there is no

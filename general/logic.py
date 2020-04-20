@@ -74,7 +74,7 @@ def create_split(path, max_chars, min_chars):
 def create_stickers(directory, book_title, book_author, num_volumes, num_pages):
     logging.debug("start creating stickers")
 
-    doc = Document(TEMPLATE)
+    doc = Document()
     style = doc.styles.add_style(STICKER, WD_STYLE_TYPE.PARAGRAPH)
     style.paragraph_format.keep_together = True
 

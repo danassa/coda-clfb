@@ -14,7 +14,7 @@ Automatization tool for the Central Library For the Blind, IL
 3. Open terminal and cd into /coda-clfb directory
 
 4. Run:
-pyi-makespec --onefile  -wF --add-data "template.docx;." --name bookPrepare main.py
+pyi-makespec --onefile  -wF --add-data "default.docx;." --name bookPrepare main.py
 
 5. Edit the file created (bookPrepare.spec) - add at the end:
 import shutil
