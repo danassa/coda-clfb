@@ -64,7 +64,10 @@ def create_gui(max_chars, min_chars):
         if event is None or event == G_EXIT:
             break
 
-        if event == G_SPLIT:
+        elif event == G_HELP:
+            sg.popup(SUPPORT_TEXT, title='')
+
+        elif event == G_SPLIT:
             if values[G_PATH] == '':
                 sg.popup("You MUST pick a file!", title=ERROR_TITLE)
             else:
@@ -74,7 +77,7 @@ def create_gui(max_chars, min_chars):
                                              args=(values[G_PATH], gui_queue, max_chars, min_chars))
                 thread_id.start()
 
-        if event == G_STICKER:
+        elif event == G_STICKER:
             error = validate_sticker_inputs(values)
             if error is not None:
                 sg.popup(ERROR_MESSAGE.format(error), title=ERROR_TITLE, line_width=100)

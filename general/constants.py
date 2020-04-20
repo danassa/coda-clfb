@@ -22,6 +22,7 @@ SPLIT_CHAPTER_START = "המשך פרק {}"
 FIRST_PAGE_VOLUMES_PARAGRAPH = "כרך ראשון"
 
 DOCX = 'docx'
+DOC = 'doc'
 BOOK_SUFFIX = 'סוף הספר'
 END = 'סוף '
 
@@ -151,3 +152,16 @@ def get_elapsed_time_str(start_time):
     display_time = '{:02d}:{:02d}'.format((elapsed_time // 100) // 60, (elapsed_time // 100) % 60)
     return display_time
 
+
+SUPPORT_TEXT = """
+הוראות תמיכה
+
+כיצד לעבוד עם התוכנה, 
+הסבר על קובץ קונפיגורציה, 
+קלט ופלט, 
+קובץ הלוג, 
+ איך אנחנו מצפים שייראה הספר ומה יכול לקרות
+ 
+ 
+ 
+"""

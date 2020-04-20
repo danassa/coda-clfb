@@ -106,14 +106,14 @@ class DocxGenerator:
                 p.block.text = ''
 
     def save(self, directory):
-        volume_path = "{dir}/{vol}.{docx}".format(dir=directory, vol=str(self.volume_index), docx=DOCX)
+        volume_path = "{dir}/{docx}/{vol}.{docx}".format(dir=directory, vol=str(self.volume_index), docx=DOCX)
         self.doc.save(volume_path)
         self.save_as_doc(volume_path)
 
     def save_as_doc(self, path):
         if platform.system() == "Windows":
             docx = path.replace("/", "\\")
-            doc = docx.replace(".docx", ".doc")
+            doc = docx.replace(DOCX, DOC)
             import win32com.client
             wrd = win32com.client.Dispatch("Word.Application")
             wrd.visible = 0
