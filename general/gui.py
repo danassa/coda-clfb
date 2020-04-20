@@ -6,24 +6,7 @@ from general.logic import start_stickers, start_split
 import logging
 
 
-logFormatter = logging.Formatter("%(asctime)s %(levelname)s:%(funcName)s %(message)s")
-fileHandler = logging.FileHandler(filename=LOG_FILE, encoding='utf-8')
-fileHandler.setFormatter(logFormatter)
-streamHandler = logging.StreamHandler()
-
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-logger.addHandler(fileHandler)
-logger.addHandler(streamHandler)
-
-logging.info('Starting C.L.F.B Tool..')
-
-
-f1 = ("Ariel", 11)
-f0 = ("Ariel", 14)
-
-
-def the_gui():
+def create_gui(max_chars, min_chars):
     logging.info('Initializing GUI..')
     sg.theme('BlueMono')
     layout = [
@@ -32,13 +15,13 @@ def the_gui():
                   title_location=sg.TITLE_LOCATION_TOP_RIGHT,
                   element_justification="r",
                   relief=sg.RELIEF_GROOVE,
-                  font=f0,
+                  font=F0,
                   layout=[
                       [sg.Text('')],
-                      [sg.Input(key=G_PATH, enable_events=True, justification='r', font=f1, size=(60, 1)),
-                       sg.FileBrowse(button_text="בחר ספר", font=f1, size=(10, 1))],
-                      [sg.Button(G_SPLIT, font=f1, size=(15, 1)),
-                       sg.Text('00:00', font=f1, key=G_TIMER),
+                      [sg.Input(key=G_PATH, enable_events=True, font=F1, size=(60, 1)),
+                       sg.FileBrowse(button_text=G_PICK_BOOK, key=G_PICK_BOOK, font=F1, size=(10, 1))],
+                      [sg.Button(G_SPLIT, font=F1, size=(15, 1)),
+                       sg.Text('00:00', font=F1, key=G_TIMER),
                        sg.Text('', size=(57, 1))],
                       [sg.Text('')]
                   ]
@@ -49,24 +32,24 @@ def the_gui():
                   title_location=sg.TITLE_LOCATION_TOP_RIGHT,
                   element_justification="r",
                   relief=sg.RELIEF_GROOVE,
-                  font=f0,
+                  font=F0,
                   layout=[
                       [sg.Text('')],
-                      [sg.Input(key=G_TITLE, size=(40, 1), enable_events=True, font=f1),
-                       sg.Text('כותר:', size=(11, 1), justification='r', font=f1)],
-                      [sg.Input(key=G_AUTHOR, size=(40, 1), font=f1),
-                       sg.Text('מחבר:', size=(11, 1), justification='r', font=f1)],
-                      [sg.Input(key=G_VOLUMES, size=(5, 1), font=f1),
-                       sg.Text('מספר כרכים:', size=(11, 1), justification='r', font=f1)],
-                      [sg.Input(key=G_PAGES, size=(5, 1), font=f1),
-                       sg.Text('ספר לימוד? אם כן, הזן מספר עמודים:', font=f1)],
-                      [sg.Input(key=G_DIR, enable_events=True, justification='r', size=(60, 1), font=f1),
-                       sg.FolderBrowse(button_text="בחר תיקייה", size=(10, 1), font=f1)],
-                      [sg.Button(G_STICKER, font=f1, size=(15, 1)), sg.Text('', size=(64, 1))],
+                      [sg.Input(key=G_TITLE, size=(40, 1), enable_events=True, justification='r', font=F1),
+                       sg.Text(G_TITLE, size=(11, 1), justification='r', font=F1)],
+                      [sg.Input(key=G_AUTHOR, size=(40, 1), justification='r', font=F1),
+                       sg.Text(G_AUTHOR, size=(11, 1), justification='r', font=F1)],
+                      [sg.Input(key=G_VOLUMES, size=(5, 1), justification='r', font=F1),
+                       sg.Text(G_VOLUMES, size=(11, 1), justification='r', font=F1)],
+                      [sg.Input(key=G_PAGES, size=(5, 1), justification='r', font=F1),
+                       sg.Text('ספר לימוד? אם כן, הזן מספר עמודים:', justification='r', font=F1)],
+                      [sg.Input(key=G_DIR, enable_events=True, size=(60, 1), font=F1),
+                       sg.FolderBrowse(button_text=G_PICK_DIR, key=G_PICK_DIR, size=(10, 1), font=F1)],
+                      [sg.Button(G_STICKER, font=F1, size=(15, 1)), sg.Text('', size=(64, 1))],
                       [sg.Text('')]
                   ]
                   )],
-        [sg.Button(G_EXIT, font=f1, size=(15, 1)), sg.Button(G_HELP, font=f1, size=(15, 1))],
+        [sg.Button(G_EXIT, font=F1, size=(15, 1)), sg.Button(G_HELP, font=F1, size=(15, 1))],
         [sg.Text('')]
     ]
 
@@ -86,29 +69,31 @@ def the_gui():
                 sg.popup("You MUST pick a file!", title='')
             else:
                 start_time = get_now()
-                window[G_SPLIT].Update(disabled=True)
-                window[G_STICKER].Update(disabled=True)
-                thread_id = threading.Thread(target=start_split, args=(values[G_PATH], gui_queue), daemon=True)
+                toggle_buttons(window, True)
+                thread_id = threading.Thread(target=start_split, daemon=True,
+                                             args=(values[G_PATH], gui_queue, max_chars, min_chars))
                 thread_id.start()
 
         if event == G_STICKER:
             error = validate_sticker_inputs(values)
             if error is not None:
-                sg.popup(error, title='שגיאה', line_width=100)
+                sg.popup(ERROR_MESSAGE.format(error), title=ERROR_TITLE, line_width=100)
             else:
                 start_time = get_now()
-                thread_id = threading.Thread(target=start_stickers, args=(
-                    values[G_DIR], values[G_TITLE], values[G_AUTHOR], values[G_VOLUMES], values[G_PAGES], gui_queue
-                ), daemon=True)
+                thread_id = threading.Thread(target=start_stickers, daemon=True,
+                                             args=(values[G_DIR], values[G_TITLE], values[G_AUTHOR],
+                                                   values[G_VOLUMES], values[G_PAGES], gui_queue))
                 thread_id.start()
 
         try:
-            message = gui_queue.get_nowait()
-            logging.info("done with task - {}, time elapsed: {}".format(message, get_elapsed_time_str(start_time)))
-            sg.popup(message)
+            response = gui_queue.get_nowait()
+            logging.info("done with status {} - {}, time elapsed: {}".format(response[0], response[1], get_elapsed_time_str(start_time)))
+            if response[0] == SUCCESS:
+                sg.popup("הפעולה הושלמה בהצלחה. מיקום המסמכים:\n\n" + response[1])
+            else:
+                sg.popup(response[1], title=ERROR_TITLE)
             start_time = 0
-            window[G_SPLIT].Update(disabled=False)
-            window[G_STICKER].Update(disabled=False)
+            toggle_buttons(window, False)
         except queue.Empty:
             pass
 
@@ -141,4 +126,9 @@ def validate_sticker_inputs(values):
     return None
 
 
-the_gui()
+def toggle_buttons(window, disabled):
+    window[G_SPLIT].Update(disabled=disabled)
+    window[G_PICK_BOOK].Update(disabled=disabled)
+    window[G_STICKER].Update(disabled=disabled)
+    window[G_PICK_DIR].Update(disabled=disabled)
+

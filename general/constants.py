@@ -1,6 +1,7 @@
 import time
 
-LOG_FILE = "coda.log"
+LOG_FILE = "log.txt"
+CONF_FILE = "config.ini"
 
 MAX_CHARS_PER_VOLUME = 65000
 MIN_CHARS_PER_VOLUME = 55000
@@ -11,10 +12,9 @@ TEMPLATE = 'template.docx'
 # this magic string should be added before each new chapter by the person editing the doc prior to it being
 # submitted to this program. this will allow us to distinguish between chapters, since normally there is no
 # consistency between different books.
-MAGIC_STRING = 'תחילת פרק חדש - קודה'
+CHAPTER_INDICATOR = "תחילת פרק חדש"
 
 GATE_END_INDICATOR = "העתקה או העברה של העותק"
-CHAPTER_INDICATOR = "תחילת פרק חדש"
 
 SPLIT_CHAPTER_END = "המשך הפרק בכרך הבא"
 SPLIT_CHAPTER_START = "המשך פרק {}"
@@ -27,17 +27,18 @@ END = 'סוף '
 
 G_TIMER = 'Timer'
 G_PATH = 'Path'
-G_SPLIT = 'חלק לכרכים!'
-G_STICKER = 'צור מדבקות!'
+G_SPLIT = 'חלק לכרכים'
+G_STICKER = 'צור מדבקות'
 G_EXIT = 'סגור'
 G_HELP = 'תמיכה'
-
-G_TITLE = 'Title'
-G_AUTHOR = 'Author'
-G_VOLUMES = 'Volumes'
-G_PAGES = 'Pages'
-G_WINDOW_TITLE = 'Coda; הספריה המרכזית לעיוורים ובעלי לקויות קריאה'
+G_PICK_BOOK = 'בחר ספר'
+G_TITLE = 'כותר'
+G_AUTHOR = 'מחבר'
+G_VOLUMES = 'מספר כרכים'
+G_PAGES = 'עמודים'
+G_PICK_DIR = 'בחר תיקייה'
 G_DIR = 'Directory'
+G_WINDOW_TITLE = 'הכנת ספרים להמרה לכתב ברייל'
 
 STICKER = 'מדבקה'
 
@@ -127,6 +128,19 @@ VOLUMES_NAMES_2 = [
     'בשלושים כרכים'
 ]
 
+F0 = ("Ariel", 14)
+F1 = ("Ariel", 11)
+
+SUCCESS = True
+FAILURE = not SUCCESS
+
+ERROR_MESSAGE = """{}
+        
+אפשר לבדוק בקובץ log.txt את פרטי השגיאה
+"""
+
+ERROR_TITLE = "ארעה שגיאה"
+
 
 def get_now():
     return int(round(time.time() * 100))
@@ -136,3 +150,4 @@ def get_elapsed_time_str(start_time):
     elapsed_time = get_now() - start_time
     display_time = '{:02d}:{:02d}'.format((elapsed_time // 100) // 60, (elapsed_time // 100) % 60)
     return display_time
+

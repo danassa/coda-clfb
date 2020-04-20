@@ -15,28 +15,33 @@ from general.element import Element
 from general.generator import DocxGenerator
 
 
-def start_split(input_path, gui_queue):
+def start_split(input_path, gui_queue, max_chars, min_chars):
     try:
-        create_split(input_path)
-        gui_queue.put("Done Split to Volumes")
+        if not input_path.endswith(DOCX):
+            logging.error("input file did not end with 'docx': {} ".format(input_path))
+            raise PackageNotFoundError
+        output_path = create_split(input_path, max_chars, min_chars)
+        gui_queue.put([SUCCESS, output_path])
     except PackageNotFoundError:
-        gui_queue.put("Failed Split. Input File Must be in .docx Format")
+        gui_queue.put([FAILURE, "Input File Must be in .docx Format"])
     except Exception as error:
-        error_type = type(error)
-        logging.error(error_type)
         logging.exception(error)
-        gui_queue.put("Failed Split. Error Occurred - {}. \nCheck the logs for {}!".format(error, error_type))
+        gui_queue.put([FAILURE, ERROR_MESSAGE.format(error)])
     return
 
 
 def start_stickers(directory, title, author, volumes, pages, gui_queue):
-    create_stickers(directory, title, author, volumes, pages)
-    gui_queue.put("Done Creating Stickers")
+    try:
+        output_path = create_stickers(directory, title, author, volumes, pages)
+        gui_queue.put([SUCCESS, output_path])
+    except Exception as error:
+        logging.exception(error)
+        gui_queue.put([FAILURE, ERROR_MESSAGE.format(error)])
     return
 
 
-def create_split(path):
-    logging.info("start split {} to volumes")
+def create_split(path, max_chars, min_chars):
+    logging.info("start split {} to volumes".format(path))
 
     origin = Document(path)
 
@@ -48,7 +53,7 @@ def create_split(path):
         logging.warning("directory {} already exists".format(directory))
         pass
 
-    book = Book(build_elements_list(origin))
+    book = Book(build_elements_list(origin), max_chars, min_chars)
     volumes = book.volumes
     volumes_count = len(volumes)
 
@@ -58,8 +63,9 @@ def create_split(path):
         formatted = DocxGenerator(new_doc, elements, book.last_gate_paragraph, vol, index, volumes_count)
         formatted.format_volume()
         formatted.save(directory)
-
     logging.debug("done split to volume, all saved in the file system")
+
+    return directory
 
 
 def create_stickers(directory, book_title, book_author, num_volumes, num_pages):
@@ -80,11 +86,12 @@ def create_stickers(directory, book_title, book_author, num_volumes, num_pages):
                                           current=VOLUMES_NAMES_1[i],
                                           pages=num_pages)
         doc.add_paragraph(text=sticker, style=style)
-    path = "{dir}/{sticker}.{docx}".format(dir=directory, sticker=STICKER, docx=DOCX)
+    path = "{dir}/{sticker} - {book}.{docx}".format(dir=directory, sticker=STICKER, book=book_title, docx=DOCX)
 
     doc.save(path)
 
     logging.debug("done creating stickers, output saved at {}".format(path))
+    return path
 
 
 def build_elements_list(parent):

@@ -7,6 +7,7 @@ from docx.oxml.table import CT_Tbl
 from docx.table import _Cell, Table
 from docx.text.paragraph import Paragraph
 from general.element import Element
+import platform
 
 
 class DocxGenerator:
@@ -22,7 +23,7 @@ class DocxGenerator:
 
     def format_volume(self):
         self.remove_redundant_paragraphs(self.elements)
-        self.delete_chapter_beginning_markers(self.elements)
+        self.delete_chapter_beginning_markers(self.elements, CHAPTER_INDICATOR)
         self.add_split_chapter_notes()
         if self.volume_index == self.volumes_count:
             self.add_book_suffix()
@@ -99,14 +100,27 @@ class DocxGenerator:
         runs[0].text = new_text
         logging.debug("update paragraph in index {} to {}".format(index, new_text))
 
-    def delete_chapter_beginning_markers(self, elements):
+    def delete_chapter_beginning_markers(self, elements, chapter_indicator):
         for p in elements:
-            if p.is_paragraph and p.block.text == CHAPTER_INDICATOR:
+            if p.is_paragraph and p.block.text == chapter_indicator:
                 p.block.text = ''
 
     def save(self, directory):
         volume_path = "{dir}/{vol}.{docx}".format(dir=directory, vol=str(self.volume_index), docx=DOCX)
         self.doc.save(volume_path)
+        self.save_as_doc(volume_path)
+
+    def save_as_doc(self, path):
+        if platform.system() == "Windows":
+            docx = path.replace("/", "\\")
+            doc = docx.replace(".docx", ".doc")
+            import win32com.client
+            wrd = win32com.client.Dispatch("Word.Application")
+            wrd.visible = 0
+            wb = wrd.Documents.Open(docx)
+            wb.SaveAs(doc, FileFormat=0)
+            wb.Close()
+            wrd.Quit()
 
 
 def build_elements_list(parent):

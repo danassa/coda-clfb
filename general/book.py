@@ -7,7 +7,7 @@ import math
 
 class Book:
 
-    def __init__(self, elements, min_chars=MIN_CHARS_PER_VOLUME, max_chars=MAX_CHARS_PER_VOLUME):
+    def __init__(self, elements, max_chars=MAX_CHARS_PER_VOLUME, min_chars=MIN_CHARS_PER_VOLUME):
         logging.info("book initialization began. a volume will contain {} to {} characters".format(min_chars, max_chars))
         assert min_chars <= max_chars, "minimum characters per volume must be equal or greater than the maximum"
 
@@ -20,11 +20,12 @@ class Book:
         self.volumes = []
 
         self.find_gate_end()
-        self.create_chapters()
-        self.split_volumes()
-
         assert self.last_gate_paragraph is not None, "no copyright paragraph found!"
+
+        self.create_chapters()
         assert len(self.chapters) >= 1
+
+        self.split_volumes()
         assert len(self.volumes) >= 1
 
     def find_gate_end(self):
@@ -54,7 +55,7 @@ class Book:
         last_chapter = Chapter(chapter_chars, current_chapter_start_index, len(self.elements)-1)
         self.chapters.append(last_chapter)
         self.chars = total_chars
-        logging.info("Found {} actual chapters in the book, with a total of {} characters"
+        logging.info("found {} actual chapters in the book, with a total of {} characters"
                      .format(len(self.chapters), self.chars))
 
         for i, c in enumerate(self.chapters):
