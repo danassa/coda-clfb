@@ -48,9 +48,12 @@ def create_split(path, max_chars, min_chars):
     directory = os.path.splitext(path)[0]
     try:
         os.mkdir(directory)
-        logging.info("created a directory at {}".format(directory))
+        os.mkdir(os.path.join(directory, DOC))
+        os.mkdir(os.path.join(directory, DOCX))
+
+        logging.info("created a directories at {}".format(directory))
     except FileExistsError:
-        logging.warning("directory {} already exists".format(directory))
+        logging.warning("directories at {} already exists".format(directory))
         pass
 
     book = Book(build_elements_list(origin), max_chars, min_chars)
