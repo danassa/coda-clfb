@@ -19,6 +19,7 @@ pyi-makespec --onefile  -wF --add-data "default.docx;." --name bookPrepare main.
 5. Edit the file created (bookPrepare.spec) - add at the end:
 import shutil
 shutil.copyfile('config.ini', '{0}/config.ini'.format(DISTPATH))
+shutil.copyfile('support.docx', '{0}/support.docx'.format(DISTPATH))
 
 6. Run:
 pyinstaller --clean bookPrepare.spec
