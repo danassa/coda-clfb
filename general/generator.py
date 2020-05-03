@@ -89,8 +89,8 @@ class DocxGenerator:
             self.update_text(index, VOLUMES_NAMES_1[self.volume_index - 1])
             self.update_text(index - 1, VOLUMES_NAMES_2[self.volumes_count - 1])
         else:
-            exception_message = "couldn't locate the phrase '{}' in the first 30 paragraphs.".format(FIRST_PAGE_VOLUMES_PARAGRAPH)
-            logging.error(exception_message + "cannot update the first page with number of volumes")
+            exception_message = "נכשל באיתור פסקת זכויות היוצרים ב-30 הפסקאות הראשונות ('{}').".format(FIRST_PAGE_VOLUMES_PARAGRAPH)
+            logging.error(exception_message + " לא ניתן לעדכן את העמוד הראשון עם מספר הכרכים.")
             raise ValueError(exception_message)
 
     def update_text(self, index, new_text):
@@ -106,7 +106,8 @@ class DocxGenerator:
                 p.block.text = ''
 
     def save(self, directory):
-        volume_path = "{dir}/{docx}/{vol}.{docx}".format(dir=directory, vol=str(self.volume_index), docx=DOCX)
+        two_digits_volume = str(self.volume_index) if self.volume_index > 9 else "0" + str(self.volume_index)
+        volume_path = "{dir}/{docx}/{vol}.{docx}".format(dir=directory, vol=two_digits_volume, docx=DOCX)
         self.doc.save(volume_path)
         self.save_as_doc(volume_path)
 
@@ -121,21 +122,3 @@ class DocxGenerator:
             wb.SaveAs(doc, FileFormat=0)
             wb.Close()
             wrd.Quit()
-
-
-def build_elements_list(parent):
-    if isinstance(parent, _Document):
-        parent_elm = parent.element.body
-    elif isinstance(parent, _Cell):
-        parent_elm = parent._tc
-    else:
-        raise ValueError("something's not right")
-
-    elements = []
-    for index, child in enumerate(parent_elm.iterchildren()):
-        if isinstance(child, CT_P):
-            elements.append(Element(True, Paragraph(child, parent)))
-        elif isinstance(child, CT_Tbl):
-            elements.append(Element(False, Table(child, parent)))
-    return elements
-

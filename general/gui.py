@@ -53,7 +53,7 @@ def create_gui(max_chars, min_chars):
         [sg.Text('')]
     ]
 
-    window = sg.Window(G_WINDOW_TITLE, layout, finalize=True)
+    window = sg.Window(G_WINDOW_TITLE, layout, finalize=True, text_justification='r')
     gui_queue = queue.Queue()
 
     start_time = 0
@@ -65,11 +65,11 @@ def create_gui(max_chars, min_chars):
             break
 
         elif event == G_HELP:
-            sg.popup(SUPPORT_TEXT, title='')
+            sg.popup("SUPPORT_TEXT", title='')
 
         elif event == G_SPLIT:
             if values[G_PATH] == '':
-                sg.popup("You MUST pick a file!", title=ERROR_TITLE)
+                sg.popup("אנא בחר קובץ ספר לפיצול!", title=ERROR_TITLE)
             else:
                 start_time = get_now()
                 toggle_buttons(window, True)

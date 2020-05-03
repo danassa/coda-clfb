@@ -55,7 +55,7 @@ STUDY_STICKER_TEMPLATE = """
 {title}
 מאת: {author}
 {total} - {current}
-עמודים {pages}
+{pages} עמודים
 הספר לא להחזרה
 
 
@@ -149,17 +149,3 @@ def get_elapsed_time_str(start_time):
     elapsed_time = get_now() - start_time
     display_time = '{:02d}:{:02d}'.format((elapsed_time // 100) // 60, (elapsed_time // 100) % 60)
     return display_time
-
-
-SUPPORT_TEXT = """
-הוראות תמיכה
-
-כיצד לעבוד עם התוכנה, 
-הסבר על קובץ קונפיגורציה, 
-קלט ופלט, 
-קובץ הלוג, 
- איך אנחנו מצפים שייראה הספר ומה יכול לקרות
- 
- 
- 
-"""

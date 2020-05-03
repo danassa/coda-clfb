@@ -24,7 +24,7 @@ def start_split(input_path, gui_queue, max_chars, min_chars):
         output_path = create_split(input_path, max_chars, min_chars)
         gui_queue.put([SUCCESS, output_path])
     except PackageNotFoundError:
-        gui_queue.put([FAILURE, "Input File Must be in .docx Format"])
+        gui_queue.put([FAILURE, "קובץ הספר חייב להיות בפורמט docx"])
     except Exception as error:
         logging.exception(error)
         gui_queue.put([FAILURE, ERROR_MESSAGE.format(error)])
@@ -54,8 +54,7 @@ def create_split(path, max_chars, min_chars):
 
         logging.info("created a directories at {}".format(directory))
     except FileExistsError:
-        logging.warning("directories at {} already exists".format(directory))
-        pass
+        raise Exception("הספר כבר פוצל בעבר. אנא בדוק את התיקייה {}. במידה ואתה מעוניין לפצל את הספר שוב, אנא מחק את התיקייה ונסה שנית".format(directory))
 
     book = Book(build_elements_list(origin), max_chars, min_chars)
     volumes = book.volumes
@@ -105,7 +104,7 @@ def build_elements_list(parent):
     elif isinstance(parent, _Cell):
         parent_elm = parent._tc
     else:
-        raise ValueError("something's not right")
+        raise ValueError("נכשל במהלך פיצול הספר לאלמנטים של פסקאות וטבלאות")
 
     elements = []
     for index, child in enumerate(parent_elm.iterchildren()):
