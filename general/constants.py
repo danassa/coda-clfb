@@ -149,3 +149,5 @@ def get_elapsed_time_str(start_time):
     elapsed_time = get_now() - start_time
     display_time = '{:02d}:{:02d}'.format((elapsed_time // 100) // 60, (elapsed_time // 100) % 60)
     return display_time
+
+SUPPORT_FILE = "support.docx"

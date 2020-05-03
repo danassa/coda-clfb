@@ -2,8 +2,9 @@ import queue
 import threading
 import PySimpleGUI as sg
 from general.constants import *
-from general.logic import start_stickers, start_split
+from general.logic import start_stickers, start_split, download_support
 import logging
+import os
 
 
 def create_gui(max_chars, min_chars):
@@ -65,7 +66,8 @@ def create_gui(max_chars, min_chars):
             break
 
         elif event == G_HELP:
-            sg.popup("SUPPORT_TEXT", title='')
+            download_support()
+            sg.popup("מוריד קובץ בשם {} עם הוראות שימוש לתיקייה".format(SUPPORT_FILE), os.getcwd(), title='')
 
         elif event == G_SPLIT:
             if values[G_PATH] == '':
