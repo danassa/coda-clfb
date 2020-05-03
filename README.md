@@ -1,5 +1,5 @@
 # coda-clfb
-Automatization tool for the Central Library For the Blind, IL
+Automation tool for the Central Library For the Blind, IL
 
 ### How to create an app for Windows end user
 
