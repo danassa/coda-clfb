@@ -98,11 +98,6 @@ def create_stickers(directory, book_title, book_author, num_volumes, num_pages):
     return path
 
 
-def download_support():
-    doc = Document(SUPPORT_FILE)
-    doc.save(SUPPORT_FILE)
-
-
 def build_elements_list(parent):
     if isinstance(parent, _Document):
         parent_elm = parent.element.body
